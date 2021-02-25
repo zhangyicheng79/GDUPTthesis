@@ -9,7 +9,7 @@
 %% Authors: Yicheng Zhang <zhangyicheng@gdupt.edu.cn>                         %%
 %%                        <YiZhang@lincoln.ac.uk>                             %%                  
 %% License: MIT License (c) 2021 Yicheng Zhang                                %%
-%% GitHub Repo:                                                               %%
+%% GitHub Repo:  https://github.com/zhangyicheng79/GDUPTthesis                %%
 %%                                                                            %%
 %%     Reference Repo:  [1] https://github.com/kks32/phd-thesis-template/     %%
 %%                      [2] https://github.com/tuna/thuthesis                 %%
