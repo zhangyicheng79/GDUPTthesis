@@ -5,11 +5,11 @@
 %%     A Bachelor LaTeX template for Guangdong University of Petrolchemical   %%
 %%  Technolgy, Automation School                                              %%
 %%                                                                            %%
-%% Version: v0.0.1 alpha                                                      %%
+%% Version: v0.0.1 beta                                                       %%
 %% Authors: Yicheng Zhang <zhangyicheng@gdupt.edu.cn>                         %%
 %%                        <YiZhang@lincoln.ac.uk>                             %%                  
 %% License: MIT License (c) 2021 Yicheng Zhang                                %%
-%% GitHub Repo:  https://github.com/zhangyicheng79/GDUPTthesis                %%
+%% GitHub Repo:                                                               %%
 %%                                                                            %%
 %%     Reference Repo:  [1] https://github.com/kks32/phd-thesis-template/     %%
 %%                      [2] https://github.com/tuna/thuthesis                 %%
@@ -31,12 +31,9 @@
 %%  and simply changing the  original class name to gdupt  (^_^)              %%
 %%============================================================================%%
 %% ***************************************************************************%%
-%%  Ver 0.0.1 alpha 仍存在问题                                                 %%
-%%    1.  尚未在模板中集成任务书，需要另外打印任务书；                            %%
-%%    2.  目录只包含正文部分，不包含摘要等前导页；                                %%
-%%    3.  标题字符串的强制分行比较不人性化                                       %%
-%%    4.  正文部分奇数页页眉出会多处一个阿拉伯数字的章号                          %%
-%%     ... ... 使用过程中也许还有许许多多各类奇怪的问题， 毕竟初稿                 %%                  
+%%  Ver 0.0.1 beta                                                            %%
+%%    *修正了正文部分奇数页页眉出会多处一个阿拉伯数字的章号                        %%
+%%                                                                            %%                  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -249,6 +246,18 @@
 % Defining the crest
 \newcommand{\@crest}{}
 \newcommand{\crest}[1]{\renewcommand{\@crest}{#1}}
+% % Supervisor
+% \newif\ifPHD@supervisor\PHD@supervisorfalse
+% \newcommand{\@supervisor}{}
+% \newcommand{\supervisor}[1]{\renewcommand{\@supervisor}{#1}\PHD@supervisortrue}
+
+% % Supervisor Title (Supervisor - Default, can be changed)
+% \newcommand{\@supervisorrole}{指导教师（职称） }
+% \newcommand{\supervisorrole}[1]{\renewcommand{\@supervisorrole}{#1}}
+
+% % Supervisor width to align
+% \newcommand{\@supervisorlinewidth}{0.35\textwidth}
+% \newcommand{\supervisorlinewidth}[1]{\renewcommand{\@supervisorlinewidth}{#1}}
 
 % Advisor 导师
 \newcommand{\@advisor}{}
@@ -342,16 +351,22 @@
 \ctexset{
    chapter/name = {第, 章},
 }
+% 页眉页脚设置
+% \fancyhdr[CE]{\@university {本科毕业设计}}
+% \fancyhdr[CO]{\chaptername}
+% \sethead[\chaptername]{\@university {本科毕业设计}}{}
+% \headrule
+% \setfoot[\thepage]{\thepage}
 
-
-%% Fancyhdr
-%%=============== 页眉页脚样式 ===============%%
+%%%%%%%%%%%%%%%%LZU%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%=============== 页眉页脚样式
 %=======head and foot
+% \RequirePackage{fancyhdr}  % Needed to define custom headers/footers
 % \RequirePackage{lastpage}  % Number of pages in the document
 % \RequirePackage{etoolbox}
 
 \pagestyle{fancy}          % Enables the custom headers/footers
-
+%% 页脚设置
 \fancypagestyle{frontmatterstyle}{
     \fancyhf{}
     \renewcommand{\headrulewidth}{0pt}
@@ -366,17 +381,17 @@
 \ProcessOptions\relax
 % \renewcommand{\chaptername}{}
 % \renewcommand{\chaptertitlename}{}
-
 % fancy 中通过\@chapapp  替代 \chaptername
+%% 章名 用汉字来显示
 \renewcommand{\@chapapp}{第\,\thechapter\,章 \Cspace}
-% 使用后 leftmark 会出现 \chaptername，\thechapter和 章名称 ？？？
-
+%更新 leftmark显示的内容，去除多出来的 \thechapter部分
+\renewcommand{\chaptermark}[1]{ \markboth{\@chapapp #1}{}}
 % %更新leftmark的内容
 % \renewcommand{\chaptermark}[1]{\markboth{\@chapapp#1}}
 % \renewcommand{\chaptername}{}
 % \renewcommand{\chaptertitlename}{}
-
-\fancypagestyle{mainmatterstyle}{
+%% 正文的页眉设置
+\fancypagestyle{mainmatterstyle}{%
     % clear header and footer first
     \fancyhf{}
     %\headrulewidth 0.4pt
@@ -389,14 +404,16 @@
     \setlength{\headwidth}{\textwidth}
     % 将leftmark内容的章号换成中文
     %偶数页页眉
-    \fancyhead[CE]{\small \@university 本科毕业设计}
+    \fancyhead[CE]{\small \@university 本科毕业设计 }
+    % \def\chaptermark#1{\markboth{ \@chapapp}{}}
+    
     %奇数页页眉
     \fancyhead[CO]{\small \leftmark }
     % Footers 页码为阿拉伯数字，位于页脚中间位置
     \fancyfoot{} % clear all footer fields
     \fancyfoot[CE,CO]{\thepage} % in the middle bottom
     % \fancyfoot[LE,RO]{\thepage}  % at the outter bottom 
-    }
+}
 
 \appto\mainmatter{\pagestyle{mainmatterstyle}}
 % \appto\mainmatter{\linespread{1.3889}\selectfont}
@@ -421,7 +438,16 @@
 \renewcommand\cftsubsecfont{\zihao{-4}}
 \renewcommand\cftchappagefont{\mdseries}
 
+
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
 
 
 % \ctexset{%
@@ -451,6 +477,89 @@
 % },
 % }%
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% %----配置信息的实现，类似win的注册表----%%%
+% %引入相关的包
+% \RequirePackage{kvdefinekeys}
+% \RequirePackage{kvsetkeys}
+% \RequirePackage{kvoptions}
+% %% 键表的基本信息设置
+% \SetupKeyvalOptions{
+%   family=gdupt,
+%   prefix=gdupt@,
+%   setkeys=\kvsetkeys}
+
+% % 分配键值
+% \newcommand\gduptsetup[1]{%
+%   \kvsetkeys{gdupt}{#1}%
+% }
+% %%定义键—— 用于声明新的选项
+% \newcommand\gdupt@define@key[1]{%
+%   \kvsetkeys{gdupt@key}{#1}%
+% }
+% %
+% \kv@set@family@handler{gdupt@key}{%
+%   \@namedef{gdupt@#1@@name}{#1}%
+%   \def\gdupt@@default{}%
+%   \def\gdupt@@choices{}%
+% %
+%   \kv@define@key{gdupt@value}{name}{%
+%     \@namedef{gdupt@#1@@name}{##1}%
+%   }%
+
+%   \@namedef{gdupt@#1@@check}{}%
+%   \@namedef{gdupt@#1@@code}{}%
+%   \kv@define@key{gdupt@value}{choices}{%
+%     \def\gdupt@@choices{##1}%
+%     \@namedef{gdupt@#1@@reset}{}%
+%     \@namedef{gdupt@#1@@check}{%
+%       \@ifundefined{%
+%         ifgdupt@\@nameuse{gdupt@#1@@name}@\@nameuse{gdupt@\@nameuse{gdupt@#1@@name}}%
+%       }
+%       {%
+%         \gdupt@error{Invalid value "#1 = \@nameuse{gdupt@\@nameuse{gdupt@#1@@name}}"}%
+%       }%
+%       \@nameuse{gdupt@#1@@reset}%
+%       \@nameuse{gdupt@\@nameuse{gdupt@#1@@name}@\@nameuse{gdupt@\@nameuse{gdupt@#1@@name}}true}%
+%     }%
+%   }%
+%   \kv@define@key{gdupt@value}{default}{%
+%     \def\gdupt@@default{##1}%
+%   }%
+%   参数2
+%   \kvsetkeys{gdupt@value}{#2}%
+%   \@namedef{gdupt@\@nameuse{gdupt@#1@@name}}{}%
+%   \kv@set@family@handler{gdupt@choice}{%
+%     \ifx\gdupt@@default\@empty
+%       \def\gdupt@@default{##1}%
+%     \fi
+%     \expandafter\newif\csname ifgdupt@\@nameuse{gdupt@#1@@name}@##1\endcsname
+%     \expandafter\g@addto@macro\csname gdupt@#1@@reset\endcsname{%
+%       \@nameuse{gdupt@\@nameuse{gdupt@#1@@name}@##1false}%
+%     }%
+%   }%
+%   \kvsetkeys@expandafter{gdupt@choice}{\gdupt@@choices}%
+%   \expandafter\let\csname gdupt@\@nameuse{gdupt@#1@@name}\endcsname\gdupt@@default
+%   \expandafter\ifx\csname gdupt@\@nameuse{gdupt@#1@@name}\endcsname\@empty\else
+%     \@nameuse{gdupt@#1@@check}%
+%   \fi
+
+%  声明一个新键值
+%   \kv@define@key{gdupt}{#1}{%
+%     \@namedef{gdupt@\@nameuse{gdupt@#1@@name}}{##1}%
+%     \@nameuse{gdupt@#1@@check}%
+%     \@nameuse{gdupt@#1@@code}%
+%   }%
+% }
+
+% % 选项连接（读出键值赋给方法）
+% \newcommand\gdupt@option@hook[2]{%
+%   \expandafter\g@addto@macro\csname gdupt@#1@@code\endcsname{#2}%
+% }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % *************************** Front Matter Layout ***************************
 %% ============= 封面布局 ============= %%
@@ -489,6 +598,13 @@
  
 
   \vspace{.3\GDUPT@titlepagespacing}
+       % Author
+    % {\usebox{\GDUPT@author}}
+    % \vspace*{0.5em}
+    %    % Supervisor
+    %   {\usebox{\PHD@supervisor}}
+    %   \vspace*{0.5em}
+    % Advisor
     {\usebox{\GDUPT@stuinfo}}
     % \vspace*{0.5em}
     \vfill
@@ -537,9 +653,6 @@
 
 
 %% ============= 摘 要 ============= %%
-%% ============= Abstract ============= %%
-
-
 %% ------------- Chinese Abstract environment ------------- %%
 \newenvironment{cnabstract} {
 
@@ -571,7 +684,7 @@
 
 %% ============= 致 谢 ============= %%
 
-%% ============= Acknowledgements ============= %%
+% ****************************** Acknowledgements ********************************
 % The acknowledgements environment puts a large, bold, centered
 % "Acknowledgements" label at the top of the page.
 
@@ -584,7 +697,7 @@
 
 
 %% ============= 术 语 ============= %%
-%%============= Nomenclature ============= %%
+% ******************************* Nomenclature *********************************
 \RequirePackage[intoc]{nomencl}
 \makenomenclature
 \renewcommand{\nomgroup}[1]{%
@@ -623,9 +736,334 @@
 %     \printindex}
 
 
+
 %% ============= 参 考 文 献 ============= %%
 %% ************* Refference ************* %%
+% \PassOptionsToPackage{compress}{natbib}
+% \AtEndOfPackageFile*{natbib}{
+%   \DeclareRobustCommand\inlinecite{\@inlinecite}
+%   \def\@inlinecite#1{\begingroup\let\@cite\NAT@citenum\citep{#1}\endgroup}
+%   \let\onlinecite\inlinecite
+%   % super style
+%   \newcommand\bibstyle@super{%
+%     \bibpunct{[}{]}{,}{s}{,}{\textsuperscript{,}}}
+%   % inline style  
+%   \newcommand\bibstyle@inline{%
+%     \bibpunct{[}{]}{,}{n}{,}{,}}
+%   \@namedef{bibstyle@author-year}{%
+%     \bibpunct{(}{)}{;}{a}{,}{,}}
+%   % Use hook passing 'cite-style' to 'bibstyle'  
+%   \gdupt@option@hook{cite-style}{
+%     \@nameuse{bibstyle@\gdupt@cite@style}
+%     }
+%   %四种选项
+%   \@namedef{bibstyle@gduptthesis-numeric}{\citestyle{super}}
+%   \@namedef{bibstyle@gduptthesis-author-year}{\citestyle{author-year}}
+%   \@namedef{bibstyle@gduptthesis-bachelor}{\citestyle{super}}
+%   \@namedef{bibstyle@gduptthesis-inline}{\citestyle{inline}}
+%  %重定义 NAT@citesuper 方法
+%   \renewcommand\NAT@citesuper[3]{\ifNAT@swa
+%     \if*#2*\else#2\NAT@spacechar\fi
+%     % \unskip\kern\p@\textsuperscript{\NAT@@open#1\NAT@@close}%
+%     %  \if*#3*\else\NAT@spacechar#3\fi\else #1\fi\endgroup}
+%     \unskip\kern\p@\textsuperscript{\NAT@@open#1\NAT@@close\if*#3*\else#3\fi}%
+%     \else #1\fi\endgroup}
+%   %重定义 NAT@citesuper 方法
+%   \renewcommand\NAT@citenum[3]{ %
+%     \ifNAT@swa\NAT@@open\if*#2*\else#2\NAT@spacechar\fi
+%           % #1\if*#3*\else\NAT@cmt#3\fi\NAT@@close\else#1\fi\endgroup}
+%           #1\NAT@@close\textsuperscript{\if*#3*\else#3\fi}\else#1\fi\endgroup
+%           }
+%  % 数字索引
+%   \def\NAT@citexnum[#1][#2]#3{%
+%     \NAT@reset@parser  %清空
+%     \NAT@sort@cites{#3}%
+%     \NAT@reset@citea
+%     \@cite{\def\NAT@num{-1}\let\NAT@last@yr\relax\let\NAT@nm\@empty
+%       \@for\@citeb:=\NAT@cite@list\do
+%       {\@safe@activestrue
+%       \edef\@citeb{\expandafter\@firstofone\@citeb\@empty}%
+%       \@safe@activesfalse
+%       \@ifundefined{b@\@citeb\@extra@b@citeb}{%
+%         {\reset@font\bfseries?}
+%           \NAT@citeundefined\PackageWarning{natbib}%
+%         {Citation `\@citeb' on page \thepage \space undefined}}%
+%       {\let\NAT@last@num\NAT@num\let\NAT@last@nm\NAT@nm
+%         \NAT@parse{\@citeb}%
+%         \ifNAT@longnames\@ifundefined{bv@\@citeb\@extra@b@citeb}{%
+%           \let\NAT@name=\NAT@all@names
+%           \global\@namedef{bv@\@citeb\@extra@b@citeb}{}}{}%
+%         \fi
+%         \ifNAT@full\let\NAT@nm\NAT@all@names\else
+%           \let\NAT@nm\NAT@name\fi
+%         \ifNAT@swa
+%         \@ifnum{\NAT@ctype>\@ne}{%
+%           \@citea
+%           \NAT@hyper@{\@ifnum{\NAT@ctype=\tw@}{\NAT@test{\NAT@ctype}}{\NAT@alias}}%
+%         }{%
+%           \@ifnum{\NAT@cmprs>\z@}{%
+%           \NAT@ifcat@num\NAT@num
+%             {\let\NAT@nm=\NAT@num}%
+%             {\def\NAT@nm{-2}}%
+%           \NAT@ifcat@num\NAT@last@num
+%             {\@tempcnta=\NAT@last@num\relax}%
+%             {\@tempcnta\m@ne}%
+%           \@ifnum{\NAT@nm=\@tempcnta}{%
+%             \@ifnum{\NAT@merge>\@ne}{}{\NAT@last@yr@mbox}%
+%           }{%
+%             \advance\@tempcnta by\@ne
+%             \@ifnum{\NAT@nm=\@tempcnta}{%
+%               % \ifx\NAT@last@yr\relax
+%               %   \def@NAT@last@yr{\@citea}%
+%               % \else
+%               %   \def@NAT@last@yr{--\NAT@penalty}%
+%               % \fi
+%               \def@NAT@last@yr{-\NAT@penalty}%
+%             }{%
+%               \NAT@last@yr@mbox
+%             }%
+%           }%
+%           }{%
+%           \@tempswatrue
+%           \@ifnum{\NAT@merge>\@ne}{\@ifnum{\NAT@last@num=\NAT@num\relax}{\@tempswafalse}{}}{}%
+%           \if@tempswa\NAT@citea@mbox\fi
+%           }%
+%         }%
+%         \NAT@def@citea
+%         \else
+%           \ifcase\NAT@ctype
+%             \ifx\NAT@last@nm\NAT@nm \NAT@yrsep\NAT@penalty\NAT@space\else
+%               \@citea \NAT@test{\@ne}\NAT@spacechar\NAT@mbox{\NAT@super@kern\NAT@@open}%
+%             \fi
+%             \if*#1*\else#1\NAT@spacechar\fi
+%             \NAT@mbox{\NAT@hyper@{{\citenumfont{\NAT@num}}}}%
+%             \NAT@def@citea@box
+%           \or
+%             \NAT@hyper@citea@space{\NAT@test{\NAT@ctype}}%
+%           \or
+%             \NAT@hyper@citea@space{\NAT@test{\NAT@ctype}}%
+%           \or
+%             \NAT@hyper@citea@space\NAT@alias
+%           \fi
+%         \fi
+%       }%
+%       }%
+%         \@ifnum{\NAT@cmprs>\z@}{\NAT@last@yr}{}%
+%         \ifNAT@swa\else
+%           % \@ifnum{\NAT@ctype=\z@}{%
+%           %   \if*#2*\else\NAT@cmt#2\fi
+%           % }{}%
+%           \NAT@mbox{\NAT@@close}%
+%           \@ifnum{\NAT@ctype=\z@}{%
+%             \if*#2*\else\textsuperscript{#2}\fi
+%           }{}%
+%         \fi
+%     }{#1}{#2}%
+%   }% End of \def\NAT@citexnum
+%   %NAT@cite
+%   \renewcommand\NAT@cite[3]{
+%            \ifNAT@swa\NAT@@open\if*#2*\else#2\NAT@spacechar\fi
+%           % #1\if*#3*\else\NAT@cmt#3\fi\NAT@@close\else#1\fi\endgroup}
+%           #1\NAT@@close\if*#3*\else\textsuperscript{#3}\fi\else#1\fi\endgroup
+%           }
+%   %
+%   \def\NAT@citex%
+%     [#1][#2]#3{%
+%     \NAT@reset@parser
+%     \NAT@sort@cites{#3}%
+%     \NAT@reset@citea
+%     \@cite{\let\NAT@nm\@empty\let\NAT@year\@empty
+%       \@for\@citeb:=\NAT@cite@list\do
+%       {\@safe@activestrue
+%       \edef\@citeb{\expandafter\@firstofone\@citeb\@empty}%
+%       \@safe@activesfalse
+%       \@ifundefined{b@\@citeb\@extra@b@citeb}{\@citea%
+%         {\reset@font\bfseries ?}\NAT@citeundefined
+%                   \PackageWarning{natbib}%
+%         {Citation `\@citeb' on page \thepage \space undefined}\def\NAT@date{}}%
+%       {\let\NAT@last@nm=\NAT@nm\let\NAT@last@yr=\NAT@year
+%         \NAT@parse{\@citeb}%
+%         \ifNAT@longnames\@ifundefined{bv@\@citeb\@extra@b@citeb}{%
+%           \let\NAT@name=\NAT@all@names
+%           \global\@namedef{bv@\@citeb\@extra@b@citeb}{}}{}%
+%         \fi
+%       \ifNAT@full\let\NAT@nm\NAT@all@names\else
+%         \let\NAT@nm\NAT@name\fi
+%       \ifNAT@swa\ifcase\NAT@ctype
+%         \if\relax\NAT@date\relax
+%           \@citea\NAT@hyper@{\NAT@nmfmt{\NAT@nm}\NAT@date}%
+%         \else
+%           \ifx\NAT@last@nm\NAT@nm\NAT@yrsep
+%               \ifx\NAT@last@yr\NAT@year
+%                 \def\NAT@temp{{?}}%
+%                 \ifx\NAT@temp\NAT@exlab\PackageWarningNoLine{natbib}%
+%                 {Multiple citation on page \thepage: same authors and
+%                 year\MessageBreak without distinguishing extra
+%                 letter,\MessageBreak appears as question mark}\fi
+%                 \NAT@hyper@{\NAT@exlab}%
+%               \else\unskip\NAT@spacechar
+%                 \NAT@hyper@{\NAT@date}%
+%               \fi
+%           \else
+%             \@citea\NAT@hyper@{%
+%               \NAT@nmfmt{\NAT@nm}%
+%               \hyper@natlinkbreak{%
+%                 \NAT@aysep\NAT@spacechar}{\@citeb\@extra@b@citeb
+%               }%
+%               \NAT@date
+%             }%
+%           \fi
+%         \fi
+%       \or\@citea\NAT@hyper@{\NAT@nmfmt{\NAT@nm}}%
+%       \or\@citea\NAT@hyper@{\NAT@date}%
+%       \or\@citea\NAT@hyper@{\NAT@alias}%
+%       \fi \NAT@def@citea
+%       \else
+%         \ifcase\NAT@ctype
+%           \if\relax\NAT@date\relax
+%             \@citea\NAT@hyper@{\NAT@nmfmt{\NAT@nm}}%
+%           \else
+%           \ifx\NAT@last@nm\NAT@nm\NAT@yrsep
+%               \ifx\NAT@last@yr\NAT@year
+%                 \def\NAT@temp{{?}}%
+%                 \ifx\NAT@temp\NAT@exlab\PackageWarningNoLine{natbib}%
+%                 {Multiple citation on page \thepage: same authors and
+%                 year\MessageBreak without distinguishing extra
+%                 letter,\MessageBreak appears as question mark}\fi
+%                 \NAT@hyper@{\NAT@exlab}%
+%               \else
+%                 \unskip\NAT@spacechar
+%                 \NAT@hyper@{\NAT@date}%
+%               \fi
+%           \else
+%             \@citea\NAT@hyper@{%
+%               \NAT@nmfmt{\NAT@nm}%
+%               \hyper@natlinkbreak{\NAT@spacechar\NAT@@open\if*#1*\else#1\NAT@spacechar\fi}%
+%                 {\@citeb\@extra@b@citeb}%
+%               \NAT@date
+%             }%
+%           \fi
+%           \fi
+%         \or\@citea\NAT@hyper@{\NAT@nmfmt{\NAT@nm}}%
+%         \or\@citea\NAT@hyper@{\NAT@date}%
+%         \or\@citea\NAT@hyper@{\NAT@alias}%
+%         \fi
+%         \if\relax\NAT@date\relax
+%           \NAT@def@citea
+%         \else
+%           \NAT@def@citea@close
+%         \fi
+%       \fi
+%       }}\ifNAT@swa\else
+%         % \if*#2*\else\NAT@cmt#2\fi
+%         \if\relax\NAT@date\relax\else\NAT@@close\fi
+%         \if*#2*\else\textsuperscript{#2}\fi
+%       \fi}{#1}{#2}}
+%   \renewcommand\bibsection{\gdupt@chapter*{\bibname}}
+%   \newcommand\gdupt@set@bibliography@format{%
+%     \ifgdupt@degree@bachelor
+%       \renewcommand\bibfont{\fontsize{10.5bp}{17bp}\selectfont}%
+%       \setlength{\bibsep}{6bp \@plus 3bp \@minus 3bp}%
+%       \ifgdupt@main@language@chinese
+%         \setlength{\bibhang}{21bp}%
+%       \else
+%         \setlength{\bibhang}{0.5in}%
+%       \fi
+%     \else
+%       \renewcommand\bibfont{\fontsize{10.5bp}{16bp}\selectfont}%
+%       \setlength{\bibsep}{3bp \@plus 3bp \@minus 3bp}%
+%       \setlength{\bibhang}{21bp}%
+%     \fi
+%   }
+%   \gdupt@set@bibliography@format
+%   \gdupt@option@hook{degree}{\gdupt@set@bibliography@format}
+%   \gdupt@option@hook{main-language}{\gdupt@set@bibliography@format}
+%   \patchcmd\thebibliography{%
+%     \clubpenalty4000%
+%   }{%
+%     \interlinepenalty=5000\relax
+%     \clubpenalty=10000\relax
+%   }{}{\gdupt@patch@error{\thebibliography}}
+%   \patchcmd\thebibliography{%
+%     \widowpenalty4000%
+%   }{%
+%     \widowpenalty=10000\relax
+%   }{}{\gdupt@patch@error{\thebibliography}}
+%   \def\@biblabel#1{[#1]\hfill}
+%   \renewcommand\NAT@bibsetnum[1]{%
+%     % \settowidth\labelwidth{\@biblabel{#1}}%
+%     % \setlength{\leftmargin}{\labelwidth}%
+%     % \addtolength{\leftmargin}{\labelsep}%
+%     \setlength{\leftmargin}{1cm}%
+%     \setlength{\itemindent}{\z@}%
+%     \setlength{\labelsep}{0.1cm}%
+%     \setlength{\labelwidth}{0.9cm}%
+%     \setlength{\itemsep}{\bibsep}
+%     \setlength{\parsep}{\z@}%
+%     \ifNAT@openbib
+%       \addtolength{\leftmargin}{\bibindent}%
+%       \setlength{\itemindent}{-\bibindent}%
+%       \setlength{\listparindent}{\itemindent}%
+%       \setlength{\parsep}{0pt}%
+%     \fi
+%   }
+% }
+% % 根据引用格式不同，赋予不同的标题（bibname）
+% \AtEndOfPackageFile*{biblatex}{
+%   \AtBeginDocument{
+%     \ifthenelse{\equal{\blx@bbxfile}{apa}}{\def\bibname{REFERENCES}}{}
+%     \ifthenelse{\equal{\blx@bbxfile}{apa6}}{\def\bibname{REFERENCES}}{}
+%     \ifthenelse{\equal{\blx@bbxfile}{mla}}{\def\bibname{WORKS CITED}}{}
+%     \ifthenelse{\equal{\blx@bbxfile}{mla-new}}{\def\bibname{WORKS CITED}}{}
+%   }
+%   \DeclareRobustCommand\inlinecite{\parencite}
+%   \defbibheading{bibliography}[\bibname]{\gdupt@chapter*{\bibname}}
+%   % 根据学位和语言设置选用参考文献格式
+%   \newcommand\gdupt@set@bibliography@format{%
+%     \ifgdupt@degree@bachelor
+%       \renewcommand\bibfont{\fontsize{10.5bp}{17bp}\selectfont}%
+%       \setlength{\bibitemsep}{6bp \@plus 3bp \@minus 3bp}%
+%       \ifgdupt@main@language@chinese
+%         \setlength{\bibhang}{21bp}%
+%       \else
+%         \setlength{\bibhang}{0.5in}%
+%       \fi
+%     \else
+%       \renewcommand\bibfont{\fontsize{10.5bp}{16bp}\selectfont}%
+%       \setlength{\bibitemsep}{3bp \@plus 3bp \@minus 3bp}%
+%       \setlength{\biblabelsep}{0.1cm}%
+%       \setlength{\bibhang}{21bp}%
 
+%     \fi
+%   }
+%   \gdupt@set@bibliography@format
+%   \gdupt@option@hook{degree}{\gdupt@set@bibliography@format}
+%   \gdupt@option@hook{main-language}{\gdupt@set@bibliography@format}
+% }  % End of AtEndOfPackageFile*{biblatex}
+%    %%apacite
+% \AtEndOfPackageFile*{apacite}{
+%   \AtBeginDocument{
+%     \gdupt@set@chapter@names
+%   }
+%   \renewcommand\bibliographytypesize{\fontsize{10.5bp}{17bp}\selectfont}
+%   \setlength{\bibitemsep}{6bp}
+%   % 根据文档的语言设置来决定边距
+%   \ifgdupt@main@language@chinese
+%     \setlength{\bibleftmargin}{21bp}
+%     \setlength{\bibindent}{-\bibleftmargin}
+%   \else
+%     \setlength{\bibleftmargin}{0.5in}
+%     \setlength{\bibindent}{-\bibleftmargin}
+%   \fi
+%   % 备注前是否加章号
+%   \def\st@rtbibchapter{%
+%     \if@numberedbib%
+%       \chapter{\bibname}%   e.g.,   6. References
+%     \else%
+%       \gdupt@chapter*{\bibname}%   e.g.,   References
+%     \fi%
+%   }%
+% }
 
 
 
@@ -722,6 +1160,47 @@
     \end{minipage}
   \end{lrbox}
 
+  % Department Box  专业名
+  % \newsavebox{\GDUPT@dept}
+  % \begin{lrbox}{\GDUPT@dept}
+  %   \begin{minipage}[c]{\textwidth}
+  %     \centering {\large \@school \Cspace \@dept \par}
+  %         {\large \@university \par}
+  %   \end{minipage}
+  % \end{lrbox}
+
+  % % Submission Box
+  % \newsavebox{\GDUPT@submissiontime}
+  % \begin{lrbox}{\GDUPT@submissiontime}
+  %   \begin{minipage}[c]{\textwidth}
+  %     \begin{center}
+  %       \large \submissiontext \par
+  %       \large \textit {\@degreetitle} \par
+  %     \end{center}
+  %   \end{minipage}
+  % \end{lrbox}
+
+  % % College and Date Box
+  % \newsavebox{\GDUPT@collegedate}
+  % \begin{lrbox}{\GDUPT@collegedate}
+  % \begin{minipage}[c]{\textwidth}
+  %   \large
+  %   \ifthenelse{\equal{\@college}{}}{
+  %     % college is not defined
+  %     \begin{center}
+  %       \@degreedate
+  %     \end{center}
+  %   }{
+  %     % college is defined
+  %     \begin{minipage}[b]{0.49\textwidth}
+  %       \flushleft\@college
+  %     \end{minipage}
+  %     \begin{minipage}[b]{0.49\textwidth}
+  %       \flushright \@degreedate
+  %     \end{minipage}
+  %   } % college is defined
+  % \end{minipage}
+  % \end{lrbox}
 
   %  Now to compute the free vertical space  计算垂直间距
   \newlength{\GDUPT@titlepagespacing}
